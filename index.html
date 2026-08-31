@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizualizacja TwinCAT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            text-align: center;
+            min-width: 320px;
+        }
+        .status-box {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 15px 0 5px 0;
+            padding: 12px;
+            border-radius: 8px;
+            background: #2a2a2a;
+            transition: color 0.3s;
+        }
+        .time-box {
+            font-size: 13px;
+            color: #888888;
+            margin-bottom: 25px;
+        }
+        .btn {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 130px;
+        }
+        .btn-true { background-color: #00c853; color: white; }
+        .btn-false { background-color: #d50000; color: white; }
+        .btn:hover { opacity: 0.8; transform: scale(1.05); }
+        .btn:active { transform: scale(0.95); }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Panel Sterowania TwinCAT</h2>
+        
+        <div>Obecny stan w PLC:</div>
+        <div id="statusVal" class="status-box">Ładowanie...</div>
+        <div id="timeVal" class="time-box">Ostatnia zmiana: --</div>
+
+        <!-- Przyciski wysyłające komendy -->
+        <div>
+            <button class="btn btn-true" onclick="sendCommand('SET_TRUE')">Ustaw TRUE</button>
+            <button class="btn btn-false" onclick="sendCommand('SET_FALSE')">Ustaw FALSE</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://rtxwebpage-aab9d-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 1. Nasłuchiwanie zmian ze sterownika na żywo
+        db.ref('twincat').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const statusEl = document.getElementById('statusVal');
+            const timeEl = document.getElementById('timeVal');
+
+            // Aktualizacja kolorów i tekstu
+            if (data.status === true) {
+                statusEl.innerText = "TRUE";
+                statusEl.style.color = "#00c853";
+            } else if (data.status === false) {
+                statusEl.innerText = "FALSE";
+                statusEl.style.color = "#d50000";
+            }
+
+            // Aktualizacja czasu
+            if (data.timestamp) {
+                timeEl.innerText = `Aktualizacja: ${data.timestamp}`;
+            }
+        });
+
+        // 2. Wysyłanie polecenia wymuszenia stanu
+        function sendCommand(cmd) {
+            db.ref('twincat/command').set(cmd);
+        }
+    </script>
+</body>
+</html>
