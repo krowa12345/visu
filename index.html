@@ -14,9 +14,8 @@
     <div class="ql-section">
         <div class="ql-container">
             
-            <!-- Pływające etykiety zewnętrzne -->
-            <div class="floating-label szt-label">SzT</div>
-            <div class="floating-label szp-label">SzP</div>
+            <div class="floating-label szt-label" id="ind-szt">SzT</div>
+            <div class="floating-label szp-label" id="ind-szp-lbl">SzP</div>
             <div class="floating-label sz-label">SZ</div>
             <div class="floating-value" id="val-szp">-- mm</div>
             <div class="floating-title">QL210</div>
@@ -24,7 +23,7 @@
             <!-- Główny biały panel -->
             <div class="ql-panel">
                 
-                <!-- BLOK 1: ID8101 ARB -->
+                <!-- BLOK 1: ID8101 ARB (Lewa) -->
                 <div class="arb-block">
                     <div class="arb-top">
                         <div class="arb-btn" id="btn-8101-ls-wyjazd">I002<br>LS Wyjazd</div>
@@ -37,7 +36,7 @@
                     <div class="arb-bottom">ID8101 ARB</div>
                 </div>
 
-                <!-- BLOK 2: ID8102 ARB -->
+                <!-- BLOK 2: ID8102 ARB (Środek) -->
                 <div class="arb-block">
                     <div class="arb-top">
                         <div class="arb-btn" id="btn-8102-ls-wyjazd">I002<br>LS Wyjazd</div>
@@ -50,7 +49,7 @@
                     <div class="arb-bottom">ID8102 ARB</div>
                 </div>
 
-                <!-- BLOK 3: ID8103 ARB -->
+                <!-- BLOK 3: ID8103 ARB (Prawa) -->
                 <div class="arb-block">
                     <div class="arb-top">
                         <div class="arb-btn" id="btn-8103-ls-wyjazd">I002<br>LS Wyjazd</div>
@@ -72,7 +71,6 @@
                         <div class="hmi-circle-small pos-a" id="ind-8100-a" onclick="sendToggle('toggle_a')">A</div>
                     </div>
                     <div class="hmi-mid">
-                        <!-- Zielony przycisk z podpiętym triggerem -->
                         <div class="hmi-circle-large color-green" id="btn-8100-green" onclick="sendTrigger('hmi_start')"></div>
                         <div class="hmi-circle-large color-blue" id="btn-8100-blue"></div>
                     </div>
@@ -156,13 +154,27 @@
                 'ind-8102-m1': data.ind_8102_m1,
                 'ind-8103-m1': data.ind_8103_m1,
                 'ind-8100-a': data.ind_a,
-                'btn-8100-green': data.ind_green
+                'btn-8100-green': data.ind_green,
+
+                'btn-8101-zezwolenie': data.zez_8101,
+                'btn-8102-zezwolenie': data.zez_8102,
+                'btn-8103-zezwolenie': data.zez_8103,
+
+                'ind-szt': data.ind_szt,
+                'ind-szp-lbl': data.ind_szp_lbl,
+
+                'btn-8101-ls-wjazd': data.ls_8101_wjazd,
+                'btn-8101-ls-wyjazd': data.ls_8101_wyjazd,
+                'btn-8102-ls-wjazd': data.ls_8102_wjazd,
+                'btn-8102-ls-wyjazd': data.ls_8102_wyjazd,
+                'btn-8103-ls-wjazd': data.ls_8103_wjazd,
+                'btn-8103-ls-wyjazd': data.ls_8103_wyjazd
             };
 
             for (const [id, state] of Object.entries(mapping)) {
                 const el = document.getElementById(id);
                 if (el) {
-                    if (id.includes('-m1')) {
+                    if (id.includes('-m1') || id === 'ind-szt' || id === 'ind-szp-lbl') {
                         if (state === true) {
                             el.classList.add('m1-active');
                         } else {
@@ -176,12 +188,26 @@
                             el.classList.remove('btn-a-red');
                         }
                     }
-                    // Obsługa zielonego przycisku startu (true = jasna zieleń)
                     else if (id === 'btn-8100-green') {
                         if (state === true) {
                             el.classList.add('btn-green-bright');
                         } else {
                             el.classList.remove('btn-green-bright');
+                        }
+                    }
+                    else if (id.includes('zezwolenie')) {
+                        if (state === true) {
+                            el.classList.add('state-red');
+                        } else {
+                            el.classList.remove('state-red');
+                        }
+                    }
+                    // Obsługa podświetlania czujników LS Wjazd/Wyjazd na pomarańczowo
+                    else if (id.includes('-ls-')) {
+                        if (state === true) {
+                            el.classList.add('ls-active');
+                        } else {
+                            el.classList.remove('ls-active');
                         }
                     }
                     else {

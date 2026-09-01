@@ -175,7 +175,6 @@ body {
     padding: 6px 2px;
     width: 60%;
     box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
-    cursor: pointer;
     user-select: none;
 }
 
@@ -292,7 +291,7 @@ body {
     font-weight: normal;
 }
 
-/* KLASA DLA AKTYWNEGO M1 */
+/* KLASA DLA AKTYWNEGO M1, SzT oraz SzP */
 .m1-active {
     background-color: #5c1a1a !important;
     border: 2px solid #ff4d4d !important;
@@ -311,4 +310,18 @@ body {
 .btn-green-bright {
     background-color: #00ff00 !important;
     box-shadow: 0 0 10px #00ff00 !important;
+}
+
+/* KLASA DLA AKTYWNEGO ZEZWOLENIA */
+.state-red {
+    background-color: #ffcccc !important;
+    color: #a00000 !important;
+    border: 1px solid #cc0000 !important;
+}
+
+/* KLASA DLA AKTYWNYCH CZUJNIKÓW LS (pomarańczowy motyw SCADA) */
+.ls-active {
+    background: linear-gradient(to bottom right, #ffb732, #ffda82) !important;
+    border: 1px solid #b36600 !important;
+    color: #000000 !important;
 }
