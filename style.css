@@ -2,12 +2,32 @@ body {
     background-color: #121212;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
+    
+    height: auto;
+    min-height: 100vh;
+    padding-top: 50px;
+    padding-bottom: 100px;
     margin: 0;
+}
+
+/* Kontenery sekcji */
+.ql-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pulpet-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .panel-container {
@@ -16,7 +36,6 @@ body {
     padding: 20px 25px;
     background-color: #1e1e1e;
     position: relative;
-    margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
@@ -50,7 +69,7 @@ body {
     border: 2px solid rgba(255,255,255,0.15);
     user-select: none;
     transition: filter 0.2s, box-shadow 0.2s;
-	cursor: pointer; /* <-- dodane */
+    cursor: pointer;
 }
 
 /* Style kolorystyczne kontrolek */
@@ -64,7 +83,7 @@ body {
 .btn-door { background-color: #5b0f0f; color: white; }
 
 .banner {
-    width: 100%;
+    width: 90%;
     max-width: 620px;
     background-color: #b8b8b8;
     color: #000000;
@@ -75,5 +94,221 @@ body {
     font-size: 15px;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    margin: 20px 0;
 }
 
+/* =========================================
+   REGULACJA ODSTĘPÓW
+   ========================================= */
+.spacer {
+    height: 80px;
+    width: 100%;
+}
+
+/* =========================================
+   NOWY PANEL QL210 (MOTYW CIEMNY - PULPET)
+   ========================================= */
+.ql-container {
+    position: relative;
+    width: fit-content;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+}
+
+.ql-panel {
+    display: flex;
+    background-color: #1e1e1e;
+    border: 2px solid #555;
+    border-radius: 4px;
+    padding: 20px 25px;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.arb-block, .hmi-block {
+    border: 1px solid #555;
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.arb-top {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    gap: 5px;
+}
+
+.arb-btn {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #222;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    width: 50%;
+    padding: 3px 0;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+    cursor: pointer;
+    user-select: none;
+}
+
+.arb-mid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    height: 50px;
+}
+
+.arb-btn-large {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #222;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    padding: 6px 2px;
+    width: 60%;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+    cursor: pointer;
+    user-select: none;
+}
+
+.arb-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    background-color: #333;
+    color: #aaa;
+}
+
+.arb-bottom {
+    background-color: #1b5e20;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 0;
+    border-top: 1px solid #222;
+}
+
+/* Specyficzne dla HMI (ID8100) */
+.hmi-top {
+    position: relative;
+    height: 50px;
+}
+
+.hmi-circle-small {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid #111;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    background-color: #444;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.pos-z { top: 5px; left: 10px; }
+.pos-r { top: 30px; left: 10px; }
+.pos-stat { top: 18px; left: 38px; }
+.pos-a { top: 15px; left: 95px; }
+
+.hmi-mid {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    height: 40px;
+    align-items: flex-end;
+    padding-bottom: 5px;
+}
+
+.hmi-circle-large {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #111;
+    cursor: pointer;
+    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5);
+}
+
+.color-green { background-color: #008800; }
+.color-blue { background-color: #0055aa; }
+
+/* Zewnętrzne pływające opisy */
+.floating-label {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #555;
+    background-color: #1e1e1e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.szt-label { top: -45px; left: 100px; }
+.szp-label { bottom: -45px; left: 100px; }
+.sz-label { top: 25px; right: -45px; background-color: #333; color: #fff; }
+
+.floating-value {
+    position: absolute;
+    bottom: -70px;
+    left: 80px;
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: #fff;
+}
+
+.floating-title {
+    position: absolute;
+    top: -11px;
+    left: 15px;
+    background-color: #1e1e1e;
+    padding: 0 6px;
+    font-size: 13px;
+    color: #bbb;
+    font-weight: normal;
+}
+
+/* KLASA DLA AKTYWNEGO M1 */
+.m1-active {
+    background-color: #5c1a1a !important;
+    border: 2px solid #ff4d4d !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+}
+
+/* KLASA DLA PRZYCISKU A (gdy Q900_bLED_Wylacz == false) */
+.btn-a-red {
+    background-color: #990000 !important;
+    color: #ffffff !important;
+    border: 1px solid #ff3333 !important;
+}
+
+/* KLASA DLA JASNOZIELONEGO PRZYCISKU START (gdy Q907_bLED_Start == true) */
+.btn-green-bright {
+    background-color: #00ff00 !important;
+    box-shadow: 0 0 10px #00ff00 !important;
+}

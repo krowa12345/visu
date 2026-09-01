@@ -3,41 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulpet Sterowniczy - Wizualizacja</title>
-    <!-- Tu jest kluczowa linijka, która ładuje Twój wygląd (CSS) -->
+    <title>Wizualizacja</title>
     <link rel="stylesheet" href="style.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-
-    <div class="panel-container">
-        <span class="panel-title">Pulpet 1</span>
-        <div class="buttons-row">
-            <!-- Tapy (Triggery) - krótkie, niezawodne kliknięcia -->
-            <div class="indicator-btn btn-reset" id="ind-reset" onclick="sendTrigger('reset')">Reset</div>
-            <div class="indicator-btn btn-start" id="ind-start" onclick="sendTrigger('start')">Start</div>
-            <div class="indicator-btn btn-zero" id="ind-zero" onclick="sendTrigger('zero')">Zero</div>
-            <div class="indicator-btn btn-feed-stop" id="ind-posuw_stop" onclick="sendTrigger('posuw_stop')">Posuw<br>stop</div>
+    <!-- SEKCJA PANELU QL210 (NA GÓRZE) -->
+    <div class="ql-section">
+        <div class="ql-container">
             
-            <!-- <0> - Działa na trzymanie (Wyl_system_1 i 2) -->
-            <div class="indicator-btn btn-zero-pos" id="ind-pos_zero" 
-                 onmousedown="sendAction('wyl_system', true)" onmouseup="sendAction('wyl_system', false)" onmouseleave="sendAction('wyl_system', false)"
-                 ontouchstart="sendAction('wyl_system', true)" ontouchend="sendAction('wyl_system', false)" ontouchcancel="sendAction('wyl_system', false)">&lt; 0 &gt;</div>
+            <!-- Pływające etykiety zewnętrzne -->
+            <div class="floating-label szt-label">SzT</div>
+            <div class="floating-label szp-label">SzP</div>
+            <div class="floating-label sz-label">SZ</div>
+            <div class="floating-value" id="val-szp">-- mm</div>
+            <div class="floating-title">QL210</div>
 
-            <!-- <I> - Trigger -->
-            <div class="indicator-btn btn-active-green" id="ind-active_i" onclick="sendTrigger('trigger_s1')">&lt; I &gt;</div>
+            <!-- Główny biały panel -->
+            <div class="ql-panel">
+                
+                <!-- BLOK 1: ID8101 ARB -->
+                <div class="arb-block">
+                    <div class="arb-top">
+                        <div class="arb-btn" id="btn-8101-ls-wyjazd">I002<br>LS Wyjazd</div>
+                        <div class="arb-btn" id="btn-8101-ls-wjazd">I001<br>LS Wjazd</div>
+                    </div>
+                    <div class="arb-mid">
+                        <div class="arb-btn-large" id="btn-8101-zezwolenie">Zezwolenie</div>
+                        <div class="arb-circle" id="ind-8101-m1">M1</div>
+                    </div>
+                    <div class="arb-bottom">ID8101 ARB</div>
+                </div>
 
-            <div class="indicator-btn btn-estop" id="btn-estop">E-STOP</div>
+                <!-- BLOK 2: ID8102 ARB -->
+                <div class="arb-block">
+                    <div class="arb-top">
+                        <div class="arb-btn" id="btn-8102-ls-wyjazd">I002<br>LS Wyjazd</div>
+                        <div class="arb-btn" id="btn-8102-ls-wjazd">I001<br>LS Wjazd</div>
+                    </div>
+                    <div class="arb-mid">
+                        <div class="arb-btn-large" id="btn-8102-zezwolenie">Zezwolenie</div>
+                        <div class="arb-circle" id="ind-8102-m1">M1</div>
+                    </div>
+                    <div class="arb-bottom">ID8102 ARB</div>
+                </div>
 
-            <!-- Przełączniki (Toggle) -->
-            <div class="indicator-btn btn-door" id="ind-door_s1" onclick="sendToggle('toggle_s1')">Drzwi S1</div>
-            <div class="indicator-btn btn-door" id="ind-door_s2" onclick="sendToggle('toggle_s2')">Drzwi S2</div>
+                <!-- BLOK 3: ID8103 ARB -->
+                <div class="arb-block">
+                    <div class="arb-top">
+                        <div class="arb-btn" id="btn-8103-ls-wyjazd">I002<br>LS Wyjazd</div>
+                        <div class="arb-btn" id="btn-8103-ls-wjazd">I001<br>LS Wjazd</div>
+                    </div>
+                    <div class="arb-mid">
+                        <div class="arb-btn-large" id="btn-8103-zezwolenie">Zezwolenie</div>
+                        <div class="arb-circle" id="ind-8103-m1">M1</div>
+                    </div>
+                    <div class="arb-bottom">ID8103 ARB</div>
+                </div>
+
+                <!-- BLOK 4: ID8100 HMI -->
+                <div class="hmi-block">
+                    <div class="hmi-top">
+                        <div class="hmi-circle-small pos-z" id="ind-8100-z">Z</div>
+                        <div class="hmi-circle-small pos-r" id="ind-8100-r">R</div>
+                        <div class="hmi-circle-small pos-stat" id="ind-8100-stat">Stat</div>
+                        <div class="hmi-circle-small pos-a" id="ind-8100-a" onclick="sendToggle('toggle_a')">A</div>
+                    </div>
+                    <div class="hmi-mid">
+                        <!-- Zielony przycisk z podpiętym triggerem -->
+                        <div class="hmi-circle-large color-green" id="btn-8100-green" onclick="sendTrigger('hmi_start')"></div>
+                        <div class="hmi-circle-large color-blue" id="btn-8100-blue"></div>
+                    </div>
+                    <div class="arb-bottom">ID8100 HMI</div>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <!-- Szary baner na błędy -->
+    <!-- ODSTĘP MIĘDZY SEKCJAMI -->
+    <div class="spacer"></div>
+
+    <!-- SEKCJA PULPITU STEROWNICZEGO (NA DOLE) -->
+    <div class="pulpet-section">
+        <div class="panel-container">
+            <span class="panel-title">Pulpet 1</span>
+            <div class="buttons-row">
+                <div class="indicator-btn btn-reset" id="ind-reset" onclick="sendTrigger('reset')">Reset</div>
+                <div class="indicator-btn btn-start" id="ind-start" onclick="sendTrigger('start')">Start</div>
+                <div class="indicator-btn btn-zero" id="ind-zero" onclick="sendTrigger('zero')">Zero</div>
+                <div class="indicator-btn btn-feed-stop" id="ind-posuw_stop" onclick="sendTrigger('posuw_stop')">Posuw<br>stop</div>
+                
+                <div class="indicator-btn btn-zero-pos" id="ind-pos_zero" 
+                     onmousedown="sendAction('wyl_system', true)" onmouseup="sendAction('wyl_system', false)" onmouseleave="sendAction('wyl_system', false)"
+                     ontouchstart="sendAction('wyl_system', true)" ontouchend="sendAction('wyl_system', false)" ontouchcancel="sendAction('wyl_system', false)">&lt; 0 &gt;</div>
+
+                <div class="indicator-btn btn-active-green" id="ind-active_i" onclick="sendTrigger('trigger_s1')">&lt; I &gt;</div>
+
+                <div class="indicator-btn btn-estop" id="btn-estop">E-STOP</div>
+
+                <div class="indicator-btn btn-door" id="ind-door_s1" onclick="sendToggle('toggle_s1')">Drzwi S1</div>
+                <div class="indicator-btn btn-door" id="ind-door_s2" onclick="sendToggle('toggle_s2')">Drzwi S2</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Baner na błędy (na samym dole) -->
     <div class="banner" id="warning-banner">
         Ładowanie komunikatu...
     </div>
@@ -49,25 +122,25 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Funkcja dla przycisków typu TAP (wysyła 'TRIGGER')
         function sendTrigger(buttonName) {
             db.ref('twincat/commands/' + buttonName).set('TRIGGER');
         }
 
-        // Funkcja dla przycisku < 0 > (wysyła true/false)
         function sendAction(buttonName, state) {
             db.ref('twincat/commands/' + buttonName).set(state);
         }
 
-        // Funkcja dla Drzwi (wysyła 'TOGGLE')
         function sendToggle(toggleName) {
             db.ref('twincat/commands/' + toggleName).set('TOGGLE');
         }
 
-        // Nasłuchiwanie stanu kontrolek PLC
         db.ref('twincat/indicators').on('value', (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
+
+            if (data.val_szp !== undefined) {
+                document.getElementById('val-szp').innerText = Number(data.val_szp).toFixed(2) + " mm";
+            }
 
             const mapping = {
                 'ind-reset': data.reset,
@@ -77,18 +150,48 @@
                 'ind-pos_zero': data.pos_zero,
                 'ind-active_i': data.active_i,
                 'ind-door_s1': data.door_s1,
-                'ind-door_s2': data.door_s2
+                'ind-door_s2': data.door_s2,
+                
+                'ind-8101-m1': data.ind_8101_m1,
+                'ind-8102-m1': data.ind_8102_m1,
+                'ind-8103-m1': data.ind_8103_m1,
+                'ind-8100-a': data.ind_a,
+                'btn-8100-green': data.ind_green
             };
 
             for (const [id, state] of Object.entries(mapping)) {
                 const el = document.getElementById(id);
                 if (el) {
-                    if (state === true) {
-                        el.style.filter = "brightness(1.4)";
-                        el.style.boxShadow = "0 0 10px rgba(255,255,255,0.6)";
-                    } else {
-                        el.style.filter = "brightness(0.7)";
-                        el.style.boxShadow = "none";
+                    if (id.includes('-m1')) {
+                        if (state === true) {
+                            el.classList.add('m1-active');
+                        } else {
+                            el.classList.remove('m1-active');
+                        }
+                    } 
+                    else if (id === 'ind-8100-a') {
+                        if (state === true) {
+                            el.classList.add('btn-a-red');
+                        } else {
+                            el.classList.remove('btn-a-red');
+                        }
+                    }
+                    // Obsługa zielonego przycisku startu (true = jasna zieleń)
+                    else if (id === 'btn-8100-green') {
+                        if (state === true) {
+                            el.classList.add('btn-green-bright');
+                        } else {
+                            el.classList.remove('btn-green-bright');
+                        }
+                    }
+                    else {
+                        if (state === true) {
+                            el.style.filter = "brightness(1.4)";
+                            el.style.boxShadow = "0 0 10px rgba(255,255,255,0.6)";
+                        } else {
+                            el.style.filter = "brightness(0.7)";
+                            el.style.boxShadow = "none";
+                        }
                     }
                 }
             }
