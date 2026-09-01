@@ -3,75 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wizualizacja TwinCAT</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            text-align: center;
-            min-width: 320px;
-        }
-        .status-box {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 15px 0 5px 0;
-            padding: 12px;
-            border-radius: 8px;
-            background: #2a2a2a;
-            transition: color 0.3s;
-        }
-        .time-box {
-            font-size: 13px;
-            color: #888888;
-            margin-bottom: 25px;
-        }
-        .btn {
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: bold;
-            margin: 5px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 130px;
-        }
-        .btn-true { background-color: #00c853; color: white; }
-        .btn-false { background-color: #d50000; color: white; }
-        .btn:hover { opacity: 0.8; transform: scale(1.05); }
-        .btn:active { transform: scale(0.95); }
-    </style>
-
+    <title>Pulpet Sterowniczy - Wizualizacja</title>
+    <!-- Tu jest kluczowa linijka, która ładuje Twój wygląd (CSS) -->
+    <link rel="stylesheet" href="style.css">
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Panel Sterowania TwinCAT</h2>
-        
-        <div>Obecny stan w PLC:</div>
-        <div id="statusVal" class="status-box">Ładowanie...</div>
-        <div id="timeVal" class="time-box">Ostatnia zmiana: --</div>
+    <div class="panel-container">
+        <span class="panel-title">Pulpet 1</span>
+        <div class="buttons-row">
+            <!-- Tapy (Triggery) - krótkie, niezawodne kliknięcia -->
+            <div class="indicator-btn btn-reset" id="ind-reset" onclick="sendTrigger('reset')">Reset</div>
+            <div class="indicator-btn btn-start" id="ind-start" onclick="sendTrigger('start')">Start</div>
+            <div class="indicator-btn btn-zero" id="ind-zero" onclick="sendTrigger('zero')">Zero</div>
+            <div class="indicator-btn btn-feed-stop" id="ind-posuw_stop" onclick="sendTrigger('posuw_stop')">Posuw<br>stop</div>
+            
+            <!-- <0> - Działa na trzymanie (Wyl_system_1 i 2) -->
+            <div class="indicator-btn btn-zero-pos" id="ind-pos_zero" 
+                 onmousedown="sendAction('wyl_system', true)" onmouseup="sendAction('wyl_system', false)" onmouseleave="sendAction('wyl_system', false)"
+                 ontouchstart="sendAction('wyl_system', true)" ontouchend="sendAction('wyl_system', false)" ontouchcancel="sendAction('wyl_system', false)">&lt; 0 &gt;</div>
 
-        <!-- Przyciski wysyłające komendy -->
-        <div>
-            <button class="btn btn-true" onclick="sendCommand('SET_TRUE')">Ustaw TRUE</button>
-            <button class="btn btn-false" onclick="sendCommand('SET_FALSE')">Ustaw FALSE</button>
+            <!-- <I> - Trigger -->
+            <div class="indicator-btn btn-active-green" id="ind-active_i" onclick="sendTrigger('trigger_s1')">&lt; I &gt;</div>
+
+            <div class="indicator-btn btn-estop" id="btn-estop">E-STOP</div>
+
+            <!-- Przełączniki (Toggle) -->
+            <div class="indicator-btn btn-door" id="ind-door_s1" onclick="sendToggle('toggle_s1')">Drzwi S1</div>
+            <div class="indicator-btn btn-door" id="ind-door_s2" onclick="sendToggle('toggle_s2')">Drzwi S2</div>
         </div>
+    </div>
+
+    <!-- Szary baner na błędy -->
+    <div class="banner" id="warning-banner">
+        Ładowanie komunikatu...
     </div>
 
     <script>
@@ -81,33 +49,63 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 1. Nasłuchiwanie zmian ze sterownika na żywo
-        db.ref('twincat').on('value', (snapshot) => {
+        // Funkcja dla przycisków typu TAP (wysyła 'TRIGGER')
+        function sendTrigger(buttonName) {
+            db.ref('twincat/commands/' + buttonName).set('TRIGGER');
+        }
+
+        // Funkcja dla przycisku < 0 > (wysyła true/false)
+        function sendAction(buttonName, state) {
+            db.ref('twincat/commands/' + buttonName).set(state);
+        }
+
+        // Funkcja dla Drzwi (wysyła 'TOGGLE')
+        function sendToggle(toggleName) {
+            db.ref('twincat/commands/' + toggleName).set('TOGGLE');
+        }
+
+        // Nasłuchiwanie stanu kontrolek PLC
+        db.ref('twincat/indicators').on('value', (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
 
-            const statusEl = document.getElementById('statusVal');
-            const timeEl = document.getElementById('timeVal');
+            const mapping = {
+                'ind-reset': data.reset,
+                'ind-start': data.start,
+                'ind-zero': data.zero,
+                'ind-posuw_stop': data.posuw_stop,
+                'ind-pos_zero': data.pos_zero,
+                'ind-active_i': data.active_i,
+                'ind-door_s1': data.door_s1,
+                'ind-door_s2': data.door_s2
+            };
 
-            // Aktualizacja kolorów i tekstu
-            if (data.status === true) {
-                statusEl.innerText = "TRUE";
-                statusEl.style.color = "#00c853";
-            } else if (data.status === false) {
-                statusEl.innerText = "FALSE";
-                statusEl.style.color = "#d50000";
+            for (const [id, state] of Object.entries(mapping)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (state === true) {
+                        el.style.filter = "brightness(1.4)";
+                        el.style.boxShadow = "0 0 10px rgba(255,255,255,0.6)";
+                    } else {
+                        el.style.filter = "brightness(0.7)";
+                        el.style.boxShadow = "none";
+                    }
+                }
             }
 
-            // Aktualizacja czasu
-            if (data.timestamp) {
-                timeEl.innerText = `Aktualizacja: ${data.timestamp}`;
+            if (data.blad_komentarz !== undefined) {
+                const bannerEl = document.getElementById('warning-banner');
+                bannerEl.innerText = data.blad_komentarz;
+                
+                if (data.blad_komentarz.trim() !== "") {
+                    bannerEl.style.backgroundColor = "#d50000";
+                    bannerEl.style.color = "#ffffff";
+                } else {
+                    bannerEl.style.backgroundColor = "#b8b8b8";
+                    bannerEl.style.color = "#000000";
+                }
             }
         });
-
-        // 2. Wysyłanie polecenia wymuszenia stanu
-        function sendCommand(cmd) {
-            db.ref('twincat/command').set(cmd);
-        }
     </script>
 </body>
 </html>
