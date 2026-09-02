@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Sterowania Półkami - SCADA</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="panel_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,6 +28,12 @@
                 <span class="sidebar-icon">❌</span>
                 <span class="sidebar-text">Wyloguj się</span>
             </a>
+            <!-- Przycisk chowania z nową klasą mobile-hide-btn -->
+            <a href="javascript:void(0)" class="sidebar-item mobile-hide-btn" onclick="toggleNavbarVisibility()">
+                <span class="sidebar-icon">🔽</span>
+                <span class="sidebar-text">Ukryj menu</span>
+            </a>
+
         </div>
         <div class="sidebar-footer">
             <div class="sidebar-user">
@@ -43,17 +49,17 @@
             <div class="panel-container fvw-panel">
                 <span class="panel-title">Nawigacja</span>
                 <div class="action-form">
-                    <div class="input-group" style="margin-bottom: 15px;">
+                    <div class="input-group" style="margin-bottom: 13px;">
                         <label class="input-label">Odstęp:</label>
                         <input type="number" id="input_odstep" step="1" value="0" class="scada-input">
                         <span class="input-unit">mm</span>
                     </div>
                     <div class="buttons-row">
-                        <button type="button" class="indicator-btn btn-nav nav-btn" onclick="sendNavCommand('poprzednia_polka')">
+                        <button type="button" class="indicator-btn btn-nav nav-btn" onclick="sendNavCommand('poprzednia_polka', this)">
                             <span class="btn-icon">◄</span>
                             <span class="btn-text">POPRZEDNIA</span>
                         </button>
-                        <button type="button" class="indicator-btn btn-nav nav-btn" onclick="sendNavCommand('nastepna_polka')">
+                        <button type="button" class="indicator-btn btn-nav nav-btn" onclick="sendNavCommand('nastepna_polka', this)">
                             <span class="btn-text">NASTĘPNA</span>
                             <span class="btn-icon">►</span>
                         </button>
@@ -64,19 +70,19 @@
             <div class="panel-container fvw-panel">
                 <span class="panel-title">Precyzyjny Przesuw</span>
                 <div class="buttons-row move-buttons">
-                    <button type="button" class="indicator-btn btn-move btn-move-minus" onclick="sendCommand('tyl_2mm')">
+                    <button type="button" class="indicator-btn btn-move btn-move-minus" onclick="sendCommand('tyl_2mm', this)">
                         <span class="btn-value">-2</span>
                         <span class="btn-unit">mm</span>
                     </button>
-                    <button type="button" class="indicator-btn btn-move btn-move-minus" onclick="sendCommand('tyl_1mm')">
+                    <button type="button" class="indicator-btn btn-move btn-move-minus" onclick="sendCommand('tyl_1mm', this)">
                         <span class="btn-value">-1</span>
                         <span class="btn-unit">mm</span>
                     </button>
-                    <button type="button" class="indicator-btn btn-move btn-move-plus" onclick="sendCommand('przod_1mm')">
+                    <button type="button" class="indicator-btn btn-move btn-move-plus" onclick="sendCommand('przod_1mm', this)">
                         <span class="btn-value">+1</span>
                         <span class="btn-unit">mm</span>
                     </button>
-                    <button type="button" class="indicator-btn btn-move btn-move-plus" onclick="sendCommand('przod_2mm')">
+                    <button type="button" class="indicator-btn btn-move btn-move-plus" onclick="sendCommand('przod_2mm', this)">
                         <span class="btn-value">+2</span>
                         <span class="btn-unit">mm</span>
                     </button>
@@ -92,8 +98,8 @@
                         <label class="input-label">Numer półki:</label>
                         <input type="number" id="input_nr_polki" min="1" max="100" value="1" class="scada-input">
                     </div>
-                    <button type="button" class="action-btn btn-start" onclick="sendComplexCommand('przejazd_na_polke', 'input_nr_polki', 'nr_polki')">
-                        <span>PRZEJEDŹ DO PÓŁKI</span>
+                    <button type="button" class="action-btn btn-start" onclick="sendComplexCommand('przejazd_na_polke', 'input_nr_polki', 'nr_polki', this)">
+                        <span class="action-text">PRZEJEDŹ DO PÓŁKI</span>
                     </button>
                 </div>
             </div>
@@ -106,8 +112,8 @@
                         <input type="number" id="input_pozycja" step="0.1" value="0" class="scada-input">
                         <span class="input-unit">mm</span>
                     </div>
-                    <button type="button" class="action-btn btn-zero-pos" onclick="sendComplexCommand('przejazd_na_pozycje', 'input_pozycja', 'pozycja_zadana')">
-                        <span>PRZEJEDŹ NA POZYCJĘ</span>
+                    <button type="button" class="action-btn btn-zero-pos" onclick="sendComplexCommand('przejazd_na_pozycje', 'input_pozycja', 'pozycja_zadana', this)">
+                        <span class="action-text">PRZEJEDŹ NA POZYCJĘ</span>
                     </button>
                 </div>
             </div>
@@ -149,10 +155,10 @@
                     </div>
                 </div>
 
-                <div class="action-form" style="margin-top: 20px;">
-                    <button type="button" class="action-btn btn-estop" onclick="sendCommand('zapisz_pozycje')">
+                <div class="action-form" style="margin-top: 18px;">
+                    <button type="button" class="action-btn btn-estop" onclick="sendCommand('zapisz_pozycje', this)">
                         <span class="action-icon">💾</span>
-                        <span>ZAPISZ POZYCJĘ</span>
+                        <span class="action-text">ZAPISZ POZYCJĘ</span>
                     </button>
                 </div>
             </div>
@@ -160,40 +166,90 @@
             <div id="panel_conn" class="panel-container flw-panel connection-panel disconnected">
                 <span class="panel-title">Połączenie</span>
                 <div class="connection-content">
-                    <div class="input-group" style="margin-bottom: 12px;">
-                        <label class="input-label" style="min-width: 90px;">NetID:</label>
-                        <input type="text" id="input_net_id" placeholder="np. 10.201..." class="scada-input" style="text-align: left;" oninput="checkInputs()">
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label class="input-label" style="min-width: 80px;">NetID:</label>
+                        <input type="text" id="input_net_id" placeholder="np. 192.168..." class="scada-input" style="text-align: left;" oninput="checkInputs()">
                     </div>
-                    <div class="input-group" style="margin-bottom: 12px;">
-                        <label class="input-label" style="min-width: 90px;">Nr maszyny:</label>
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label class="input-label" style="min-width: 80px;">Nr maszyny:</label>
                         <input type="number" id="input_masch_nr" placeholder="Wpisz nr..." class="scada-input" style="text-align: left;" oninput="checkInputs()">
                     </div>
-                    <div class="connection-status-row" style="margin-bottom: 15px;">
+                    <div class="connection-status-row" style="margin-bottom: 13px;">
                         <span class="connection-label">Status:</span>
                         <span id="txt_conn" class="connection-value disconnected">
                             <span id="ind_conn" class="status-dot disconnected"></span>
                             <span id="lbl_conn">CZEKAM NA DANE</span>
                         </span>
                     </div>
-                    <button type="button" id="btn_toggle_conn" class="action-btn btn-start" onclick="toggleConnection()">
-                        <span id="btn_conn_text">POŁĄCZ</span>
+                    <button type="button" id="btn_toggle_conn" class="action-btn btn-start" onclick="toggleConnection(this)">
+                        <span id="btn_conn_text" class="action-text">POŁĄCZ</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Pływający przycisk przywracania menu (widoczny tylko, gdy menu jest ukryte) -->
+    <button id="fab-show-menu" class="fab-show-menu" onclick="toggleNavbarVisibility()" title="Pokaż menu">
+        <span>☰</span>
+    </button>
+
     <script>
         const FIREBASE_URL = "https://rtxwebpage-aab9d-default-rtdb.europe-west1.firebasedatabase.app/panel_okno";
         let isConnected = false;
         let odstepInitialized = false;
+
+        // --- FUNKCJA CHOWANIA/POKAZYWANIA CAŁEGO MENU ---
+        function toggleNavbarVisibility() {
+            const sidebar = document.getElementById('sidebar');
+            const fab = document.getElementById('fab-show-menu');
+            const body = document.body;
+            
+            sidebar.classList.toggle('nav-hidden');
+            body.classList.toggle('nav-hidden-body');
+            
+            if(sidebar.classList.contains('nav-hidden')) {
+                fab.classList.add('visible');
+            } else {
+                fab.classList.remove('visible');
+            }
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('expanded');
         }
 
+        function showMobileSentFeedback(btn) {
+            if (!btn || window.innerWidth > 768) return;
+            if (btn.classList.contains('btn-move')) return;
+
+            let textSpan = btn.querySelector('.btn-text, .action-text');
+
+            if (textSpan) {
+                const originalText = textSpan.innerText;
+                btn.classList.add('mobile-sent-active');
+                textSpan.innerText = "WYSŁANO";
+
+                setTimeout(() => {
+                    btn.classList.remove('mobile-sent-active');
+                    textSpan.innerText = originalText;
+                }, 300);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            // Domyślne ukrywanie navbara tylko na małych ekranach (telefonach)
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const fab = document.getElementById('fab-show-menu');
+                const body = document.body;
+                
+                sidebar.classList.add('nav-hidden');
+                body.classList.add('nav-hidden-body');
+                fab.classList.add('visible');
+            }
+
             const cachedNetId = localStorage.getItem('saved_net_id');
             const cachedMaschNr = localStorage.getItem('saved_masch_nr');
             
@@ -216,7 +272,8 @@
             }
         }
 
-        async function sendCommand(cmd) {
+        async function sendCommand(cmd, btn = null) {
+            if (btn) showMobileSentFeedback(btn);
             if (!isConnected) return;
             const payload = {};
             payload[cmd] = "TRIGGER";
@@ -231,7 +288,8 @@
             }
         }
 
-        async function sendComplexCommand(cmd, inputId, paramName) {
+        async function sendComplexCommand(cmd, inputId, paramName, btn = null) {
+            if (btn) showMobileSentFeedback(btn);
             if (!isConnected) return;
             const val = document.getElementById(inputId).value;
             const payload = {};
@@ -248,7 +306,8 @@
             }
         }
 
-        async function sendNavCommand(action) {
+        async function sendNavCommand(action, btn = null) {
+            if (btn) showMobileSentFeedback(btn);
             if (!isConnected) return;
             const odstepVal = document.getElementById('input_odstep').value;
             const payload = {};
@@ -267,7 +326,8 @@
             }
         }
 
-        async function toggleConnection() {
+        async function toggleConnection(btn = null) {
+            if (btn) showMobileSentFeedback(btn);
             const netIdInput = document.getElementById('input_net_id');
             const maschNrInput = document.getElementById('input_masch_nr');
             const netId = netIdInput.value.trim();
@@ -327,9 +387,9 @@
                     document.getElementById('txt_conn').className = "connection-value disconnected";
                     document.getElementById('ind_conn').className = "status-dot disconnected";
                     
-                    const btnConn = document.getElementById('btn_toggle_conn');
-                    btnConn.innerText = "POŁĄCZ";
-                    btnConn.className = "action-btn btn-start";
+                    const btnConnText = document.getElementById('btn_conn_text');
+                    if(btnConnText.innerText !== "WYSŁANO") btnConnText.innerText = "POŁĄCZ";
+                    document.getElementById('btn_toggle_conn').className = "action-btn btn-start";
                     
                     document.getElementById('input_net_id').disabled = false;
                     document.getElementById('input_masch_nr').disabled = false;
@@ -365,14 +425,16 @@
                     document.getElementById('lbl_conn').innerText = isConn ? "POŁĄCZONO Z PLC" : "ROZŁĄCZONO";
                 }
 
+                const btnConnText = document.getElementById('btn_conn_text');
                 const btnConn = document.getElementById('btn_toggle_conn');
+                
                 if (isConn) {
-                    btnConn.innerText = "ROZŁĄCZ";
+                    if(btnConnText.innerText !== "WYSŁANO") btnConnText.innerText = "ROZŁĄCZ";
                     btnConn.className = "action-btn btn-estop";
                     netIdInput.disabled = true;
                     maschNrInput.disabled = true;
                 } else {
-                    btnConn.innerText = "POŁĄCZ";
+                    if(btnConnText.innerText !== "WYSŁANO") btnConnText.innerText = "POŁĄCZ";
                     btnConn.className = "action-btn btn-start";
                     netIdInput.disabled = false;
                     maschNrInput.disabled = false;
