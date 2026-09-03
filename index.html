@@ -222,7 +222,15 @@
 
         function showMobileSentFeedback(btn) {
             if (!btn || window.innerWidth > 768) return;
-            if (btn.classList.contains('btn-move')) return;
+            
+            // NOWY FRAGMENT: Jeśli to przycisk przesuwu, dodaj klasę na 300ms i zakończ
+            if (btn.classList.contains('btn-move')) {
+                btn.classList.add('mobile-move-active');
+                setTimeout(() => {
+                    btn.classList.remove('mobile-move-active');
+                }, 300);
+                return;
+            }
 
             let textSpan = btn.querySelector('.btn-text, .action-text');
 
